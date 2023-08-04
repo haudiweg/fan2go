@@ -8,14 +8,16 @@ type CurveConfig struct {
 }
 
 type LinearCurveConfig struct {
-	Sensor string          `json:"sensor"`
+	Sensor string          `json:"sensor,omitempty"`
+	Curve  string          `json:"curve,omitempty"`
 	Min    int             `json:"min"`
 	Max    int             `json:"max"`
 	Steps  map[int]float64 `json:"steps"`
 }
 
 type PidCurveConfig struct {
-	Sensor   string  `json:"sensor"`
+	Sensor   string  `json:"sensor,omitempty"`
+	Curve    string  `json:"curve,omitempty"`
 	SetPoint float64 `json:"setPoint"`
 	P        float64 `json:"p"`
 	I        float64 `json:"i"`

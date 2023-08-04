@@ -126,6 +126,7 @@ func TestValidateCurveSensorIdIsMissing(t *testing.T) {
 				ID: "curve",
 				Linear: &LinearCurveConfig{
 					Sensor: "",
+					Curve:  "",
 					Min:    0,
 					Max:    100,
 				},

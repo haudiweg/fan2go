@@ -162,22 +162,28 @@ func validateCurves(config *Configuration) error {
 		}
 
 		if curveConfig.Linear != nil {
-			if len(curveConfig.Linear.Sensor) <= 0 {
-				return fmt.Errorf("curve %s: missing sensorId", curveConfig.ID)
+			if len(curveConfig.Linear.Sensor) <= 0 && len(curveConfig.Linear.Curve) <= 0 {
+				return fmt.Errorf("curve %s: missing sensorId or curveId", curveConfig.ID)
 			}
 
-			if !sensorIdExists(curveConfig.Linear.Sensor, config) {
+			if len(curveConfig.Linear.Sensor) > 0 && !sensorIdExists(curveConfig.Linear.Sensor, config) {
 				return fmt.Errorf("curve %s: no sensor definition with id '%s' found", curveConfig.ID, curveConfig.Linear.Sensor)
+			}
+			if len(curveConfig.Linear.Curve) > 0 && !curveIdExists(curveConfig.Linear.Curve, config) {
+				return fmt.Errorf("curve %s: no curve definition with id '%s' found", curveConfig.ID, curveConfig.Linear.Curve)
 			}
 		}
 
 		if curveConfig.PID != nil {
-			if len(curveConfig.PID.Sensor) <= 0 {
-				return fmt.Errorf("curve %s: missing sensorId", curveConfig.ID)
+			if len(curveConfig.PID.Sensor) <= 0 && len(curveConfig.PID.Curve) <= 0 {
+				return fmt.Errorf("curve %s: missing sensorId or curveId", curveConfig.ID)
 			}
 
-			if !sensorIdExists(curveConfig.PID.Sensor, config) {
+			if len(curveConfig.PID.Sensor) > 0 && !sensorIdExists(curveConfig.PID.Sensor, config) {
 				return fmt.Errorf("curve %s: no sensor definition with id '%s' found", curveConfig.ID, curveConfig.PID.Sensor)
+			}
+			if len(curveConfig.PID.Curve) > 0 && !curveIdExists(curveConfig.PID.Curve, config) {
+				return fmt.Errorf("curve %s: no curve definition with id '%s' found", curveConfig.ID, curveConfig.PID.Curve)
 			}
 
 			pidConfig := curveConfig.PID

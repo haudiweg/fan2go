@@ -1,9 +1,10 @@
 package curves
 
 import (
+	"math"
+
 	"github.com/markusressel/fan2go/internal/configuration"
 	"github.com/markusressel/fan2go/internal/ui"
-	"math"
 )
 
 type FunctionSpeedCurve struct {

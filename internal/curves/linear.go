@@ -1,10 +1,12 @@
 package curves
 
 import (
+	"math"
+
 	"github.com/markusressel/fan2go/internal/configuration"
 	"github.com/markusressel/fan2go/internal/sensors"
+	"github.com/markusressel/fan2go/internal/ui"
 	"github.com/markusressel/fan2go/internal/util"
-	"math"
 )
 
 type LinearSpeedCurve struct {
@@ -17,8 +19,20 @@ func (c *LinearSpeedCurve) GetId() string {
 }
 
 func (c *LinearSpeedCurve) Evaluate() (value int, err error) {
-	sensor := sensors.SensorMap[c.Config.Linear.Sensor]
-	var avgTemp = sensor.GetMovingAvg()
+	var avgTemp float64
+	if c.Config.Linear.Sensor != "" {
+		sensor := sensors.SensorMap[c.Config.Linear.Sensor]
+		avgTemp = sensor.GetMovingAvg()
+
+	} else if c.Config.Linear.Curve != "" {
+		v, err := SpeedCurveMap[c.Config.Linear.Curve].Evaluate()
+		if err != nil {
+			return 0, err
+		}
+		avgTemp = math.Min(float64(v), 100)
+	} else {
+		ui.Fatal("no input selectet use Sensor or Curve")
+	}
 
 	steps := c.Config.Linear.Steps
 	if steps != nil {

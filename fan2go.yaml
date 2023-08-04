@@ -6,23 +6,23 @@ fans:
       platform: it8686-isa-0a40
       index: 1
     neverStop: true
-    curve: pump_mix
+    curve: pump_mix_scaled
 
   - id: f1
     hwmon:
       platform: corsaircpro-hid-*
       index: 1
-    curve: intake_mix
+    curve: inputwater_diferences_scaled
   - id: f2
     hwmon:
       platform: corsaircpro-hid-*
       index: 2
-    curve: intake_mix
+    curve: inputwater_diferences_scaled
   - id: f3
     hwmon:
       platform: corsaircpro-hid-*
       index: 3
-    curve: intake_mix
+    curve: inputwater_diferences_scaled
 
   - id: t1
     hwmon:
@@ -55,6 +55,7 @@ sensors:
       platform: zenpower-pci-00c3
       index: 1
   - id: water
+
     hwmon:
       platform: corsaircpro-hid-*
       index: 1
@@ -66,25 +67,24 @@ sensors:
     hwmon:
       platform: corsaircpro-hid-*
       index: 3
+
   - id: gpu
     hwmon:
       platform: amdgpu-pci-*
       index: 2
 curves:
-  - id: cpu_curve
+  - id: cpu_temp
     linear:
       sensor: cpu_package
       steps:
-        - 30: 0
-        - 42: 20
-        - 52 : 90
-        - 65: 255
-  - id: wasser_pump
+        - 0: 0
+        - 100: 100
+  - id: wasser_temp
     linear:
       sensor: water
       steps:
-        - 20: 0
-        - 60: 255
+        - 0: 0
+        - 100: 100
   - id: airintake_temp
     linear:
       sensor: airintake
@@ -104,24 +104,23 @@ curves:
        - 0: 0
        - 100: 100
 
-  - id: staticminspeed
-    linear:
-      sensor: water
-      steps:
-        - 0: 10
-        - 100: 10
-
-
   - id: pump_mix
     function:
-      type: maximum
+      type: delta
       curves:
-        - cpu_curve
-        - wasser_pump
+        - cpu_temp
+        - wasser_temp
+  - id: pump_mix_scaled
+    linear:
+      curve: pump_mix
+      steps:
+        - 0: 20
+        - 10: 255
+        
   - id: overambiant_curve
     function:
-      type: difference
-      sensors:
+      type: delta
+      curves:
         - airintake_temp
         - airoutput_temp
   - id: overambiant_curve_scaled
@@ -130,9 +129,10 @@ curves:
       steps:
         - 0: 0
         - 10: 255
+
   - id: inputwater_diferences
     function:
-      type:  difference
+      type:  delta
       curves:
         - airintake_temp
         - water_temp
@@ -141,10 +141,4 @@ curves:
       curve: inputwater_diferences
       steps:
        - 0: 0
-       - 10: 255
-  - id: intake_mix
-    function:
-      type: maximum
-      curves:
-        - inputwater_diferences_scaled
-        - staticminspeed
+       - 7: 255

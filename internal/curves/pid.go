@@ -1,8 +1,6 @@
 package curves
 
 import (
-	"math"
-
 	"github.com/markusressel/fan2go/internal/configuration"
 	"github.com/markusressel/fan2go/internal/sensors"
 	"github.com/markusressel/fan2go/internal/ui"
@@ -33,7 +31,7 @@ func (c *PidSpeedCurve) Evaluate() (value int, err error) {
 		if err != nil {
 			return 0, err
 		}
-		measured = math.Min(float64(v), 100)
+		measured = float64(v) * 1000
 	} else {
 		ui.Fatal("no imput selectet use Sensor or Curve")
 	}

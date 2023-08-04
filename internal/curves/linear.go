@@ -23,15 +23,16 @@ func (c *LinearSpeedCurve) Evaluate() (value int, err error) {
 	if c.Config.Linear.Sensor != "" {
 		sensor := sensors.SensorMap[c.Config.Linear.Sensor]
 		avgTemp = sensor.GetMovingAvg()
-
 	} else if c.Config.Linear.Curve != "" {
 		v, err := SpeedCurveMap[c.Config.Linear.Curve].Evaluate()
 		if err != nil {
+			ui.Debug("%s invalid", c.GetId())
 			return 0, err
 		}
-		avgTemp = math.Min(float64(v), 100)
-	} else {
-		ui.Fatal("no input selectet use Sensor or Curve")
+		//avgTemp = math.Min(float64(v), 255)
+		//avgTemp = (float64(v) / 255) * 100 * 1000
+		avgTemp = float64(v) * 1000
+		//ui.Debug("%-45s avgTemp %7.4f", c.GetId(), avgTemp)
 	}
 
 	steps := c.Config.Linear.Steps
